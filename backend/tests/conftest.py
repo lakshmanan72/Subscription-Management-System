@@ -1,6 +1,7 @@
 import os
 import sys
 from pathlib import Path
+from typing import Dict
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -102,3 +103,31 @@ def customer_token(client):
     res = client.post("/api/v1/auth/login", json={"email": "aditi@zenithtech.in", "password": "Client@Zenith123!"})
     assert res.status_code == 200, res.text
     return res.json()["access_token"]
+
+
+@pytest.fixture
+def other_customer_token(client):
+    """Returns a valid JWT access token for second Customer."""
+    res = client.post("/api/v1/auth/login", json={"email": "karan@apexdynamics.co", "password": "Client@Apex123!"})
+    assert res.status_code == 200, res.text
+    return res.json()["access_token"]
+
+
+@pytest.fixture
+def admin_headers(admin_token: str) -> Dict[str, str]:
+    return {"Authorization": f"Bearer {admin_token}"}
+
+
+@pytest.fixture
+def staff_headers(staff_token: str) -> Dict[str, str]:
+    return {"Authorization": f"Bearer {staff_token}"}
+
+
+@pytest.fixture
+def customer_headers(customer_token: str) -> Dict[str, str]:
+    return {"Authorization": f"Bearer {customer_token}"}
+
+
+@pytest.fixture
+def other_customer_headers(other_customer_token: str) -> Dict[str, str]:
+    return {"Authorization": f"Bearer {other_customer_token}"}

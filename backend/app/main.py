@@ -1,4 +1,11 @@
+"""
+Brightloop Application Entrypoint
+Initializes the FastAPI application, CORS middleware, global exception handlers,
+and registers all API v1 routing controllers.
+"""
+
 import os
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,6 +38,12 @@ from backend.api import (
     outcome_exchange_router,
 )
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("brightloop")
 
 
 @asynccontextmanager
@@ -39,25 +52,26 @@ async def lifespan(app: FastAPI):
     init_db()
     db = SessionLocal()
     try:
-        # Check if users table is populated
         if db.query(User).count() == 0:
-            print("[Lifespan] Initializing database with seed dataset...")
+            logger.info("[Lifespan] Initializing database with seed dataset...")
             seed_database()
     finally:
         db.close()
     yield
+    logger.info("Shutting down Brightloop backend.")
 
 
 app = FastAPI(
     title="Brightloop Enterprise Subscription & Recurring Billing API",
-    description="Full-lifecycle SaaS subscription, quotation builder, invoicing, and revenue engine.",
+    description="Enterprise SaaS Subscription Management and Recurring Revenue Billing System.",
     version="1.0.0",
-    lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
+    openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
-# CORS Middleware Configuration
+# 1. CORS Middleware Configuration
 cors_env = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000")
 origins = [o.strip() for o in cors_env.split(",") if o.strip()]
 if not origins:
@@ -72,17 +86,17 @@ app.add_middleware(
 )
 
 
-# Global Exception Handler
+# 2. Global Exception Handler
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    print(f"[Error] {request.method} {request.url.path}: {exc}")
+    logger.error(f"[Error] {request.method} {request.url.path}: {exc}")
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"detail": str(exc) or "An internal server error occurred."},
     )
 
 
-# Health Check & Root Endpoints
+# 3. Health Check & Root Endpoints
 @app.get("/", tags=["Health"])
 def root():
     return {
@@ -98,7 +112,7 @@ def health():
     return {"status": "ok"}
 
 
-# Mount all 13 Domain Routers under /api/v1
+# 4. Mount all Domain Routers under /api/v1
 API_V1_PREFIX = "/api/v1"
 app.include_router(auth_router, prefix=API_V1_PREFIX)
 app.include_router(products_router, prefix=API_V1_PREFIX)
@@ -117,3 +131,8 @@ app.include_router(portability_router, prefix=API_V1_PREFIX)
 app.include_router(lifeboat_router, prefix=API_V1_PREFIX)
 app.include_router(outcome_contracts_router, prefix=API_V1_PREFIX)
 app.include_router(outcome_exchange_router, prefix=API_V1_PREFIX)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=True)
