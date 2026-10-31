@@ -41,12 +41,24 @@ import CustomerDetail from './pages/customers/CustomerDetail';
 import Reports from './pages/reports/Reports';
 import Settings from './pages/settings/Settings';
 
+// Phase 13 Admin Innovation Pages
+import ContinuityList from './pages/continuity/ContinuityList';
+import LifeboatList from './pages/lifeboat/LifeboatList';
+import ContractsList from './pages/contracts/ContractsList';
+import ExchangeList from './pages/exchange/ExchangeList';
+
 // Portal Pages
 import PortalOverview from './pages/portal/PortalOverview';
 import PortalSubscriptions from './pages/portal/PortalSubscriptions';
 import PortalInvoices from './pages/portal/PortalInvoices';
 import PortalPayments from './pages/portal/PortalPayments';
 import PortalProfile from './pages/portal/PortalProfile';
+
+// Phase 13 Portal Innovation Pages
+import PortalPortability from './pages/portal/PortalPortability';
+import PortalLifeboat from './pages/portal/PortalLifeboat';
+import PortalOutcomeContracts from './pages/portal/PortalOutcomeContracts';
+import PortalOutcomeExchange from './pages/portal/PortalOutcomeExchange';
 
 const NotFound = () => (
   <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
@@ -161,6 +173,12 @@ export function App() {
           {/* Reports & Settings (Admin Only) */}
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+
+          {/* Phase 13 Innovations */}
+          <Route path="continuity" element={<ContinuityList />} />
+          <Route path="lifeboat" element={<LifeboatList />} />
+          <Route path="contracts" element={<ContractsList />} />
+          <Route path="exchange" element={<ExchangeList />} />
         </Route>
 
         {/* STAFF DASHBOARD ROUTES - Restricted to STAFF */}
@@ -192,6 +210,12 @@ export function App() {
           <Route path="invoices/:id" element={<InvoiceDetail />} />
 
           <Route path="payments" element={<PaymentsList />} />
+
+          {/* Phase 13 Innovations */}
+          <Route path="continuity" element={<ContinuityList />} />
+          <Route path="lifeboat" element={<LifeboatList />} />
+          <Route path="contracts" element={<ContractsList />} />
+          <Route path="exchange" element={<ExchangeList />} />
         </Route>
 
         {/* CUSTOMER PORTAL ROUTES - Restricted to CUSTOMER */}
@@ -208,6 +232,10 @@ export function App() {
           <Route path="subscriptions" element={<PortalSubscriptions />} />
           <Route path="invoices" element={<PortalInvoices />} />
           <Route path="payments" element={<PortalPayments />} />
+          <Route path="portability" element={<PortalPortability />} />
+          <Route path="lifeboat" element={<PortalLifeboat />} />
+          <Route path="contracts" element={<PortalOutcomeContracts />} />
+          <Route path="exchange" element={<PortalOutcomeExchange />} />
           <Route path="profile" element={<PortalProfile />} />
         </Route>
 

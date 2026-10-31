@@ -157,3 +157,54 @@ Brightloop connects a React 18 single-page application (Vite, Tailwind CSS, Axio
 | `GET` | `/notifications` | `list_user_notifications` | `NotificationsDropdown.jsx` | Unread notifications and alerts. |
 | `PATCH` | `/notifications/{id}/read`| `mark_notification_read` | `NotificationsDropdown.jsx` | Marks notification as read. |
 | `POST` | `/settings/reset-demo` | `reset_demo_database` | `TopNav.jsx`, `Settings.jsx` | Resets SQLite database to fresh initial seed data. |
+
+---
+
+### 13. Subscription Continuity Network (`/api/v1/portability`)
+| HTTP Method | Backend Endpoint | Controller Function | Frontend Component | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/portability/requests` | `create_portability_request` | `PortalPortability.jsx` | Creates migration request with deterministic proration calculation. |
+| `GET` | `/portability/requests` | `list_portability_requests` | `ContinuityList.jsx`, `PortalPortability.jsx` | Lists portability requests (customer-isolated or administrative). |
+| `GET` | `/portability/requests/{id}` | `get_portability_request` | `ContinuityList.jsx`, `PortalPortability.jsx` | Retrieves request snapshot, fingerprint, and audit timeline. |
+| `POST` | `/portability/requests/{id}/review` | `review_portability_request` | `ContinuityList.jsx` | Admin approval or rejection with audit logging. |
+| `POST` | `/portability/requests/{id}/complete` | `complete_portability_migration` | `ContinuityList.jsx` | Finalizes controlled migration without deleting original subscription. |
+| `GET` | `/portability/requests/{id}/history` | `get_portability_history` | `ContinuityList.jsx`, `PortalPortability.jsx` | Audit trail timeline of migration events. |
+
+---
+
+### 14. Subscription Lifeboat (`/api/v1/lifeboat`)
+| HTTP Method | Backend Endpoint | Controller Function | Frontend Component | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/lifeboat/adjustments` | `create_adjustment_request` | `PortalLifeboat.jsx` | Customer submits temporary downgrade, pause, or payment deferral. |
+| `GET` | `/lifeboat/adjustments` | `list_adjustments` | `LifeboatList.jsx`, `PortalLifeboat.jsx` | Lists adjustments with restoration dates and relief impact. |
+| `GET` | `/lifeboat/adjustments/{id}` | `get_adjustment` | `LifeboatList.jsx` | Retrieves adjustment record and approval history. |
+| `POST` | `/lifeboat/adjustments/{id}/review` | `review_adjustment` | `LifeboatList.jsx` | Admin approves or rejects adjustment request. |
+| `POST` | `/lifeboat/adjustments/{id}/restore` | `restore_subscription` | `LifeboatList.jsx` | Idempotently restores original subscription tier and pricing. |
+| `POST` | `/lifeboat/process-expired` | `process_expired_adjustments` | `LifeboatList.jsx` | Automated batch processor restoring subscriptions past due date. |
+
+---
+
+### 15. Subscription Outcome Contracts (`/api/v1/outcome-contracts`)
+| HTTP Method | Backend Endpoint | Controller Function | Frontend Component | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/outcome-contracts` | `create_outcome_contract` | `ContractsList.jsx` | Creates outcome contract with SLA availability & latency metrics. |
+| `GET` | `/outcome-contracts` | `list_outcome_contracts` | `ContractsList.jsx`, `PortalOutcomeContracts.jsx` | Lists outcome contracts with active metric commitments. |
+| `GET` | `/outcome-contracts/{id}` | `get_outcome_contract` | `ContractsList.jsx` | Retrieves contract details, telemetry log, and credit records. |
+| `POST` | `/outcome-contracts/{id}/measurements` | `record_measurement` | `ContractsList.jsx` | Records telemetry, deterministically calculates credits for breaches. |
+| `GET` | `/outcome-contracts/credits/all` | `list_service_credits` | `ContractsList.jsx`, `PortalOutcomeContracts.jsx` | Lists all evaluated service credits. |
+| `POST` | `/outcome-contracts/credits/{id}/review` | `review_service_credit` | `ContractsList.jsx` | Admin authorizes or rejects calculated service credit. |
+| `POST` | `/outcome-contracts/credits/{id}/apply-to-invoice` | `apply_credit_to_invoice` | `ContractsList.jsx` | Deducts approved credit from customer's open invoice. |
+
+---
+
+### 16. Subscription Outcome Exchange (`/api/v1/exchange`)
+| HTTP Method | Backend Endpoint | Controller Function | Frontend Component | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/exchange/providers` | `create_provider_profile` | `ExchangeList.jsx` | Registers verified subscription provider profile. |
+| `GET` | `/exchange/providers` | `list_providers` | `ExchangeList.jsx`, `PortalOutcomeExchange.jsx` | Lists registered providers and verified track records. |
+| `POST` | `/exchange/offerings` | `create_subscription_offering` | `ExchangeList.jsx` | Publishes outcome offering with contractual SLA guarantees. |
+| `GET` | `/exchange/offerings` | `list_offerings` | `ExchangeList.jsx`, `PortalOutcomeExchange.jsx` | Browses marketplace offerings with filtering and SLA comparisons. |
+| `GET` | `/exchange/offerings/{id}` | `get_offering` | `PortalOutcomeExchange.jsx` | Detailed view of offering commitments and credit policies. |
+| `POST` | `/exchange/interest-requests` | `submit_interest_request` | `PortalOutcomeExchange.jsx` | Customer submits interest or quotation request for an offering. |
+| `GET` | `/exchange/interest-requests` | `list_interest_requests` | `ExchangeList.jsx`, `PortalOutcomeExchange.jsx` | Pipeline of customer quotation requests. |
+| `POST` | `/exchange/interest-requests/{id}/convert-to-quotation` | `convert_interest_to_quotation` | `ExchangeList.jsx` | Converts accepted marketplace interest into Brightloop Quotation. |

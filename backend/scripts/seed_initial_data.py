@@ -14,6 +14,8 @@ import sys
 from decimal import Decimal
 from pathlib import Path
 import bcrypt
+import json
+from datetime import datetime, timedelta
 
 # Ensure root directory is on Python path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -45,7 +47,23 @@ from backend.models import (
     NotificationPreference,
     Notification,
     AuditLog,
+    PortabilityRequest,
+    PortabilityRecord,
+    SubscriptionMigrationEvent,
+    SubscriptionAdjustment,
+    AdjustmentApproval,
+    AdjustmentHistory,
+    OutcomeContract,
+    ContractMetric,
+    PerformanceMeasurement,
+    ServiceCredit,
+    ServiceCreditApproval,
+    ProviderProfile,
+    SubscriptionOffering,
+    OfferingCommitment,
+    OfferingInterestRequest,
 )
+
 
 
 def hash_password(password: str) -> str:
@@ -1262,6 +1280,310 @@ def seed_database():
             if not db.query(AuditLog).filter_by(id=a["id"]).first():
                 db.add(AuditLog(**a))
         db.commit()
+
+        # 16. Phase 13 - Outcome Exchange (Providers & Offerings)
+        if not db.query(ProviderProfile).filter_by(id="prov-nexus-1").first():
+            prov1 = ProviderProfile(
+                id="prov-nexus-1",
+                name="Nexus Cloud Networks",
+                slug="nexus-cloud",
+                description="High-throughput, multi-region cloud infrastructure and automated SaaS hosting with verified 99.99% uptime guarantees.",
+                website="https://nexuscloud.io",
+                contact_email="partnerships@nexuscloud.io",
+                rating=4.9,
+                verified_status=True,
+                verification_badge="Enterprise Tier-1",
+                active_subscribers_count=1420,
+                uptime_guarantee=99.99,
+                logo_url="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=150&auto=format&fit=crop&q=80",
+            )
+            prov2 = ProviderProfile(
+                id="prov-starlight-1",
+                name="Starlight Scale Systems",
+                slug="starlight-scale",
+                description="Resilient database hosting, microservices runtime, and audited SOC2 compliance clusters.",
+                website="https://starlightscale.com",
+                contact_email="sla@starlightscale.com",
+                rating=4.8,
+                verified_status=True,
+                verification_badge="SOC2 Certified",
+                active_subscribers_count=890,
+                uptime_guarantee=99.95,
+                logo_url="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150&auto=format&fit=crop&q=80",
+            )
+            db.add_all([prov1, prov2])
+            db.commit()
+
+        if not db.query(SubscriptionOffering).filter_by(id="off-nexus-ha").first():
+            off1 = SubscriptionOffering(
+                id="off-nexus-ha",
+                provider_id="prov-nexus-1",
+                product_id="prod-1",
+                plan_id="plan-enterprise-annual",
+                title="Nexus High-Availability SaaS Cluster",
+                tier="Enterprise",
+                description="Mission-critical cloud orchestration with active multi-zone replication, automated recovery, and contractual 99.99% availability.",
+                pricing_model="Tiered Enterprise",
+                unit_price=35000.0,
+                billing_frequency="Monthly",
+                terms_conditions="Standard Enterprise Outcome Agreement with automatic invoice penalty credits.",
+                credit_policy="15% credit for every 0.05% availability shortfall below 99.99%. Max 50% invoice cap.",
+                included_features=json.dumps(["99.99% SLA Guarantee", "Automated Dunning Resilience", "Dedicated TAM", "P95 Latency < 120ms"]),
+                is_active=True,
+                is_featured=True,
+            )
+            off1.commitments = [
+                OfferingCommitment(
+                    id="cmt-1",
+                    metric_name="Service Availability SLA",
+                    target_value=99.99,
+                    unit="%",
+                    tolerance=0.01,
+                    credit_guarantee_percent=25.0,
+                    is_verified_by_telemetry=True,
+                    commitment_type="SLA",
+                ),
+                OfferingCommitment(
+                    id="cmt-2",
+                    metric_name="P95 API Latency SLA",
+                    target_value=120.0,
+                    unit="ms",
+                    tolerance=15.0,
+                    credit_guarantee_percent=15.0,
+                    is_verified_by_telemetry=True,
+                    commitment_type="SLA",
+                ),
+            ]
+
+            off2 = SubscriptionOffering(
+                id="off-starlight-db",
+                provider_id="prov-starlight-1",
+                product_id="prod-3",
+                plan_id="plan-accounting-pro",
+                title="Starlight Resilient Data Cloud",
+                tier="Growth",
+                description="Distributed ledger and real-time financial database sync with verified sub-minute backup RPO.",
+                pricing_model="Flat Monthly",
+                unit_price=18500.0,
+                billing_frequency="Monthly",
+                terms_conditions="Continuous financial database SLA with cryptographic audit logs.",
+                credit_policy="10% credit for any response time degradation exceeding agreed tolerance.",
+                included_features=json.dumps(["99.95% Availability", "Zero Data Loss RPO", "Automated Encryption", "15min Response SLA"]),
+                is_active=True,
+                is_featured=False,
+            )
+            off2.commitments = [
+                OfferingCommitment(
+                    id="cmt-3",
+                    metric_name="Service Availability SLA",
+                    target_value=99.95,
+                    unit="%",
+                    tolerance=0.05,
+                    credit_guarantee_percent=20.0,
+                    is_verified_by_telemetry=True,
+                    commitment_type="SLA",
+                ),
+            ]
+            db.add_all([off1, off2])
+            db.commit()
+
+        # 17. Phase 13 - Outcome Contracts & Service Credits
+        if not db.query(OutcomeContract).filter_by(id="oct-seed-1").first():
+            oct1 = OutcomeContract(
+                id="oct-seed-1",
+                contract_number="OCT-2026-0001",
+                title="TCS Enterprise Mission-Critical SLA Agreement",
+                customer_id="cust-1",
+                subscription_id="SUB-2024-001",
+                product_id="prod-1",
+                plan_id="plan-starter-monthly",
+                measurement_period="Monthly",
+                start_date="2026-01-01",
+                end_date="2026-12-31",
+                status="Active",
+                credit_cap_percentage=50.0,
+                notes="Rigorous contractual SLA with automatic financial service credits on telemetry breach.",
+            )
+            met1 = ContractMetric(
+                id="met-seed-1",
+                contract_id="oct-seed-1",
+                metric_name="Core Cloud Service Availability",
+                metric_key="uptime_percent",
+                target_value=99.95,
+                tolerance=0.02,
+                unit="%",
+                comparison_operator="GTE",
+                credit_rate_per_unit=10.0,
+                max_credit_percentage=30.0,
+            )
+            met2 = ContractMetric(
+                id="met-seed-2",
+                contract_id="oct-seed-1",
+                metric_name="P95 Endpoint Response Latency",
+                metric_key="latency_ms",
+                target_value=150.0,
+                tolerance=15.0,
+                unit="ms",
+                comparison_operator="LTE",
+                credit_rate_per_unit=0.5,
+                max_credit_percentage=20.0,
+            )
+            oct1.metrics = [met1, met2]
+            db.add(oct1)
+            db.commit()
+
+            # Seed a real telemetry measurement showing a minor SLA breach
+            meas1 = PerformanceMeasurement(
+                id="meas-seed-1",
+                metric_id="met-seed-1",
+                contract_id="oct-seed-1",
+                period_start="2026-09-01",
+                period_end="2026-09-30",
+                measured_value=99.88,
+                target_value=99.95,
+                is_breached=True,
+                breach_magnitude=0.05,
+                measurement_source="AUTOMATED_TELEMETRY",
+                evidence_notes="Network transit disruption on Sept 14 (12 mins degraded throughput). Verified by Prometheus Telemetry.",
+            )
+            db.add(meas1)
+            db.commit()
+
+            crd1 = ServiceCredit(
+                id="crd-seed-1",
+                credit_number="CRD-2026-0001",
+                contract_id="oct-seed-1",
+                measurement_id="meas-seed-1",
+                subscription_id="SUB-2024-001",
+                customer_id="cust-1",
+                invoice_id=None,
+                calculated_percentage=10.0,
+                credit_amount=1194.16,
+                status="Approved",
+                reason="SLA Breach for Core Cloud Service Availability: Measured 99.88% vs Target 99.95%.",
+                calculation_details=json.dumps({
+                    "shortfall": 0.05,
+                    "credit_rate": 10.0,
+                    "applied_percentage": 10.0,
+                    "subscription_amount": 11941.60,
+                    "credit_amount": 1194.16,
+                }),
+            )
+            crd1.approvals.append(
+                ServiceCreditApproval(
+                    id="cap-seed-1",
+                    credit_id="crd-seed-1",
+                    reviewer_name="Priyanka Sen",
+                    action="Approved",
+                    notes="Automated telemetry validated. SLA breach credit approved for next billing invoice.",
+                )
+            )
+            db.add(crd1)
+            db.commit()
+
+        # 18. Phase 13 - Subscription Portability Request
+        if not db.query(PortabilityRequest).filter_by(id="prq-seed-1").first():
+            prq1 = PortabilityRequest(
+                id="prq-seed-1",
+                request_number="PRQ-2026-0001",
+                customer_id="cust-1",
+                subscription_id="SUB-2024-001",
+                origin_provider="Brightloop Software",
+                destination_provider="Nexus Cloud Networks",
+                destination_account_id="NEXUS-TCS-994",
+                status="Approved",
+                plan_name="Starter Monthly Cloud",
+                billing_period="Monthly",
+                prepaid_amount=11941.60,
+                used_amount=3980.53,
+                unused_value=7961.07,
+                currency="INR",
+                approved_by="Priyanka Sen",
+                approved_at=datetime.utcnow(),
+            )
+            snapshot_seed = json.dumps({
+                "version": "1.0",
+                "origin_system": "Brightloop Enterprise Subscription Platform",
+                "subscription_number": "SUB-2024-001",
+                "plan": "Starter Monthly Cloud",
+                "unused_value": 7961.07,
+                "currency": "INR",
+                "customer": "Rajesh Kumar (Tata Consultancy Services)",
+            })
+            prq1.portable_record = PortabilityRecord(
+                id="rec-seed-1",
+                request_id="prq-seed-1",
+                portable_token="ptk_9f83acbe82174d92b",
+                subscription_snapshot=snapshot_seed,
+                schema_version="1.0",
+                export_checksum="8f82da91a3be718420b92",
+            )
+            prq1.events = [
+                SubscriptionMigrationEvent(
+                    id="mig-seed-1",
+                    request_id="prq-seed-1",
+                    event_type="REQUEST_INITIATED",
+                    actor_name="Rajesh Kumar",
+                    details="Portability migration request initiated to Nexus Cloud Networks. Calculated unused value: ₹7,961.07.",
+                ),
+                SubscriptionMigrationEvent(
+                    id="mig-seed-2",
+                    request_id="prq-seed-1",
+                    event_type="REQUEST_APPROVED",
+                    actor_name="Priyanka Sen",
+                    details="Portability verified and approved. Portable record package generated.",
+                ),
+            ]
+            db.add(prq1)
+            db.commit()
+
+        # 19. Phase 13 - Subscription Lifeboat Adjustment
+        if not db.query(SubscriptionAdjustment).filter_by(id="adj-seed-1").first():
+            adj1 = SubscriptionAdjustment(
+                id="adj-seed-1",
+                adjustment_number="LFB-2026-0001",
+                subscription_id="SUB-2024-002",
+                customer_id="cust-2",
+                adjustment_type="DOWNGRADE",
+                status="Active",
+                reason="Temporary enterprise budget restructuring across regional branches.",
+                start_date=datetime.utcnow().strftime("%Y-%m-%d"),
+                end_date=(datetime.utcnow() + timedelta(days=60)).strftime("%Y-%m-%d"),
+                duration_days=60,
+                original_plan_name="Enterprise Annual Scale",
+                original_plan_id="plan-enterprise-annual",
+                original_unit_price=83400.0,
+                original_billing_frequency="Yearly",
+                temporary_plan_name="Lifeboat Tier (Annual Scale Relief)",
+                temporary_plan_id=None,
+                temporary_unit_price=41700.0,
+                deferral_days=0,
+                deferred_obligation_amount=0.0,
+                financial_relief_amount=41700.0,
+                is_restored=False,
+            )
+            adj1.approvals.append(
+                AdjustmentApproval(
+                    id="app-seed-1",
+                    adjustment_id="adj-seed-1",
+                    approver_name="Priyanka Sen",
+                    action="Approved",
+                    comments="Approved 60-day temporary discount relief for Infosys BPM.",
+                )
+            )
+            adj1.history.append(
+                AdjustmentHistory(
+                    id="adh-seed-1",
+                    adjustment_id="adj-seed-1",
+                    event_name="ACTIVATED",
+                    previous_state="Pending",
+                    new_state="Active",
+                    notes="Activated 60-day relief. Scheduled restoration date defined.",
+                )
+            )
+            db.add(adj1)
+            db.commit()
+
 
         print("\n" + "=" * 60)
         print("DATABASE SEEDING SUCCESSFUL - VALIDATION SUMMARY:")

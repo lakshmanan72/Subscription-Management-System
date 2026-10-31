@@ -68,5 +68,34 @@ export const API_ENDPOINTS = {
     STAFF: '/settings/staff',
     NOTIFICATIONS: '/settings/notifications',
   },
+  PORTABILITY: {
+    REQUESTS: '/portability/requests',
+    BY_ID: (id) => `/portability/requests/${id}`,
+    REVIEW: (id) => `/portability/requests/${id}/review`,
+    COMPLETE: (id) => `/portability/requests/${id}/complete`,
+    HISTORY: (id) => `/portability/requests/${id}/history`,
+  },
+  LIFEBOAT: {
+    ADJUSTMENTS: '/lifeboat/adjustments',
+    BY_ID: (id) => `/lifeboat/adjustments/${id}`,
+    REVIEW: (id) => `/lifeboat/adjustments/${id}/review`,
+    RESTORE: (id) => `/lifeboat/adjustments/${id}/restore`,
+    PROCESS_EXPIRED: '/lifeboat/process-expired',
+  },
+  OUTCOME_CONTRACTS: {
+    BASE: '/outcome-contracts',
+    BY_ID: (id) => `/outcome-contracts/${id}`,
+    MEASUREMENTS: (id) => `/outcome-contracts/${id}/measurements`,
+    CREDITS: '/outcome-contracts/credits/all',
+    REVIEW_CREDIT: (id) => `/outcome-contracts/credits/${id}/review`,
+    APPLY_CREDIT: (id) => `/outcome-contracts/credits/${id}/apply-to-invoice`,
+  },
+  EXCHANGE: {
+    PROVIDERS: '/exchange/providers',
+    OFFERINGS: '/exchange/offerings',
+    BY_OFFERING_ID: (id) => `/exchange/offerings/${id}`,
+    INTEREST_REQUESTS: '/exchange/interest-requests',
+    CONVERT_INTEREST: (id) => `/exchange/interest-requests/${id}/convert-to-quotation`,
+  },
 };
 

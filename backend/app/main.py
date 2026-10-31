@@ -25,7 +25,12 @@ from backend.api import (
     settings_router,
     dashboard_router,
     notifications_router,
+    portability_router,
+    lifeboat_router,
+    outcome_contracts_router,
+    outcome_exchange_router,
 )
+
 
 
 @asynccontextmanager
@@ -108,3 +113,7 @@ app.include_router(reports_router, prefix=API_V1_PREFIX)
 app.include_router(settings_router, prefix=API_V1_PREFIX)
 app.include_router(dashboard_router, prefix=API_V1_PREFIX)
 app.include_router(notifications_router, prefix=API_V1_PREFIX)
+app.include_router(portability_router, prefix=API_V1_PREFIX)
+app.include_router(lifeboat_router, prefix=API_V1_PREFIX)
+app.include_router(outcome_contracts_router, prefix=API_V1_PREFIX)
+app.include_router(outcome_exchange_router, prefix=API_V1_PREFIX)

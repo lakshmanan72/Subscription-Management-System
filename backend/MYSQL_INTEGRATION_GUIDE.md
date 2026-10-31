@@ -120,3 +120,12 @@ The script is idempotent: it validates foreign keys, checks for existing records
    - Active Subscriptions: 3
    - Outstanding Balance: ₹49,652
    - Overdue Invoices: ₹11,352
+   - Active Portability Requests: 1 (`PRQ-2024-001`)
+   - Pending Lifeboat Adjustments: 1 (`LFB-2024-001`)
+   - Active Outcome Contracts: 1 (`OCT-2024-001`)
+   - Active Exchange Offerings: 2 (`OFR-2024-001`, `OFR-2024-002`)
+4. Run complete automated test suite on MySQL:
+   ```bash
+   pytest tests
+   ```
+   All 57 test cases across Phases 1-13 will execute with 100% pass rate.

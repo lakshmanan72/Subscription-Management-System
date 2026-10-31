@@ -16,6 +16,10 @@ import {
   ChevronRight,
   CheckCircle2,
   ShieldAlert,
+  Network,
+  LifeBuoy,
+  ShoppingBag,
+  Zap,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -40,7 +44,18 @@ import Badge from '../../components/common/Badge';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { subscriptions, invoices, payments, plans, customers } = useData();
+  const {
+    subscriptions,
+    invoices,
+    payments,
+    plans,
+    customers,
+    portabilityRequests,
+    lifeboatAdjustments,
+    outcomeContracts,
+    serviceCredits,
+    exchangeOfferings,
+  } = useData();
 
   // Dynamic KPI computations
   const totalRevenue = payments.reduce((acc, p) => acc + (p.status === 'Success' ? p.amount : 0), 0);
@@ -262,6 +277,117 @@ export const Dashboard = () => {
             </div>
           );
         })}
+      </div>
+
+      {/* Phase 13: Advanced Subscription Intelligence Cards */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-brand-600 animate-pulse" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+              Subscription Intelligence & Innovation Modules
+            </h3>
+          </div>
+          <span className="text-[11px] text-slate-400">Live Database Records</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+          <Link
+            to="/continuity"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-brand-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Portability Requests</span>
+              <Network className="w-4 h-4 text-brand-600" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {portabilityRequests.filter((r) => r.status === 'Submitted' || r.status === 'Under_Review').length}
+            </div>
+            <span className="text-[10px] text-brand-600 group-hover:underline mt-0.5 block">
+              {portabilityRequests.length} total requests &rarr;
+            </span>
+          </Link>
+
+          <Link
+            to="/lifeboat"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-teal-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Lifeboat Pending</span>
+              <LifeBuoy className="w-4 h-4 text-teal-600" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {lifeboatAdjustments.filter((a) => a.status === 'Requested').length}
+            </div>
+            <span className="text-[10px] text-teal-600 group-hover:underline mt-0.5 block">
+              Awaiting admin review &rarr;
+            </span>
+          </Link>
+
+          <Link
+            to="/lifeboat"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-amber-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Restorations Due</span>
+              <Clock className="w-4 h-4 text-amber-500" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {lifeboatAdjustments.filter((a) => !a.isRestored && !a.is_restored && (a.status === 'Active' || a.status === 'Approved')).length}
+            </div>
+            <span className="text-[10px] text-amber-600 group-hover:underline mt-0.5 block">
+              Active relief adjustments &rarr;
+            </span>
+          </Link>
+
+          <Link
+            to="/contracts"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-violet-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Active SLA Contracts</span>
+              <ShieldAlert className="w-4 h-4 text-violet-600" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {outcomeContracts.filter((c) => c.status === 'Active').length}
+            </div>
+            <span className="text-[10px] text-violet-600 group-hover:underline mt-0.5 block">
+              Guaranteed SLAs &rarr;
+            </span>
+          </Link>
+
+          <Link
+            to="/contracts"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-emerald-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Credits Issued</span>
+              <DollarSign className="w-4 h-4 text-emerald-600" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {formatINR(serviceCredits.reduce((sum, c) => sum + (c.creditAmount || c.credit_amount || 0), 0))}
+            </div>
+            <span className="text-[10px] text-emerald-600 group-hover:underline mt-0.5 block">
+              {serviceCredits.length} credits evaluated &rarr;
+            </span>
+          </Link>
+
+          <Link
+            to="/exchange"
+            className="p-3.5 rounded-xl border border-slate-200/90 bg-white hover:border-blue-300 transition-all shadow-subtle group"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500 uppercase">Active Offerings</span>
+              <ShoppingBag className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="text-xl font-black text-slate-900 mt-2">
+              {exchangeOfferings.filter((o) => o.is_active !== false).length}
+            </div>
+            <span className="text-[10px] text-blue-600 group-hover:underline mt-0.5 block">
+              Marketplace catalog &rarr;
+            </span>
+          </Link>
+        </div>
       </div>
 
       {/* Charts Row 1: Monthly Revenue & Subscription Growth */}

@@ -12,6 +12,10 @@ import {
   Printer,
   ChevronRight,
   ShieldCheck,
+  Network,
+  LifeBuoy,
+  ShieldAlert,
+  ShoppingBag,
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { formatINR, formatDate } from '../../utils/formatters';
@@ -26,6 +30,10 @@ export const PortalOverview = () => {
     subscriptions,
     invoices,
     payments,
+    portabilityRequests,
+    lifeboatAdjustments,
+    outcomeContracts,
+    serviceCredits,
     updateSubscriptionStatus,
   } = useData();
 
@@ -43,6 +51,19 @@ export const PortalOverview = () => {
   const activeSubs = mySubs.filter((s) => s.status === 'Active');
   const outstandingAmount = myInvs.reduce((acc, i) => acc + (i.outstandingAmount || 0), 0);
   const overdueInvs = myInvs.filter((i) => i.status === 'Overdue');
+
+  const myPortability = portabilityRequests.filter(
+    (r) => r.customerId === portalCustomer?.id || r.customer_id === portalCustomer?.id
+  );
+  const myAdjustments = lifeboatAdjustments.filter(
+    (a) => a.customerId === portalCustomer?.id || a.customer_id === portalCustomer?.id
+  );
+  const myContracts = outcomeContracts.filter(
+    (c) => c.customerId === portalCustomer?.id || c.customer_id === portalCustomer?.id
+  );
+  const myCredits = serviceCredits.filter(
+    (cr) => cr.customerId === portalCustomer?.id || cr.customer_id === portalCustomer?.id
+  );
 
   return (
     <div className="space-y-6">
@@ -123,6 +144,73 @@ export const PortalOverview = () => {
             <CreditCard className="w-5 h-5" />
           </div>
         </div>
+      </div>
+
+      {/* Phase 13 Innovation Quick Access Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link
+          to="/portal/portability"
+          className="p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-400 transition-all shadow-subtle group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-800">Portability Network</span>
+            <Network className="w-4 h-4 text-brand-600" />
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">
+            {myPortability.length > 0 ? `${myPortability.length} migration request(s) active` : 'Migrate subscriptions without history loss'}
+          </p>
+          <span className="text-xs text-brand-600 font-semibold group-hover:underline mt-2 inline-block">
+            Portability portal &rarr;
+          </span>
+        </Link>
+
+        <Link
+          to="/portal/lifeboat"
+          className="p-4 rounded-xl border border-slate-200 bg-white hover:border-teal-400 transition-all shadow-subtle group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-800">Lifeboat Relief</span>
+            <LifeBuoy className="w-4 h-4 text-teal-600" />
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">
+            {myAdjustments.length > 0 ? `${myAdjustments.length} adjustment(s) scheduled` : 'Pause or downgrade plans during hardships'}
+          </p>
+          <span className="text-xs text-teal-600 font-semibold group-hover:underline mt-2 inline-block">
+            Financial relief &rarr;
+          </span>
+        </Link>
+
+        <Link
+          to="/portal/contracts"
+          className="p-4 rounded-xl border border-slate-200 bg-white hover:border-violet-400 transition-all shadow-subtle group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-800">SLA Outcome Guarantees</span>
+            <ShieldAlert className="w-4 h-4 text-violet-600" />
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">
+            {myContracts.length > 0 ? `${myContracts.length} active SLA contract(s)` : 'Contractual guarantees & service credits'}
+          </p>
+          <span className="text-xs text-violet-600 font-semibold group-hover:underline mt-2 inline-block">
+            Outcome contracts &rarr;
+          </span>
+        </Link>
+
+        <Link
+          to="/portal/exchange"
+          className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-400 transition-all shadow-subtle group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-800">Outcome Exchange</span>
+            <ShoppingBag className="w-4 h-4 text-blue-600" />
+          </div>
+          <p className="text-[11px] text-slate-500 mt-1">
+            Compare verified offerings by guaranteed SLA outcomes
+          </p>
+          <span className="text-xs text-blue-600 font-semibold group-hover:underline mt-2 inline-block">
+            Browse marketplace &rarr;
+          </span>
+        </Link>
       </div>
 
       {/* Active Subscriptions Grid */}

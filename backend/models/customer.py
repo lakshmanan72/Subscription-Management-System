@@ -32,3 +32,8 @@ class Customer(Base):
     subscriptions = relationship("Subscription", back_populates="customer_rel", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="customer_rel", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="customer_rel", cascade="all, delete-orphan")
+    portability_requests = relationship("PortabilityRequest", back_populates="customer_rel", cascade="all, delete-orphan")
+    adjustments = relationship("SubscriptionAdjustment", back_populates="customer_rel", cascade="all, delete-orphan")
+    outcome_contracts = relationship("OutcomeContract", back_populates="customer_rel", cascade="all, delete-orphan")
+    service_credits = relationship("ServiceCredit", back_populates="customer_rel", cascade="all, delete-orphan")
+    interest_requests = relationship("OfferingInterestRequest", back_populates="customer_rel", cascade="all, delete-orphan")

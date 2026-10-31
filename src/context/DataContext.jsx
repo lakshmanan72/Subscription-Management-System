@@ -202,6 +202,106 @@ export const normalizeDiscount = (d) => ({
   usage_count: d.usage_count ?? d.usageCount ?? 0,
 });
 
+export const normalizePortability = (r) => ({
+  ...r,
+  requestNumber: r.request_number ?? r.requestNumber ?? r.id,
+  request_number: r.request_number ?? r.requestNumber ?? r.id,
+  customerId: r.customer_id ?? r.customerId ?? '',
+  customer_id: r.customer_id ?? r.customerId ?? '',
+  customerName: r.customer_name ?? r.customerName ?? '',
+  subscriptionId: r.subscription_id ?? r.subscriptionId ?? '',
+  subscription_id: r.subscription_id ?? r.subscriptionId ?? '',
+  destinationProvider: r.destination_provider ?? r.destinationProvider ?? '',
+  destination_provider: r.destination_provider ?? r.destinationProvider ?? '',
+  destinationPlan: r.destination_plan ?? r.destinationPlan ?? '',
+  destination_plan: r.destination_plan ?? r.destinationPlan ?? '',
+  unusedPrepaidValue: r.unused_prepaid_value ?? r.unusedPrepaidValue ?? 0,
+  unused_prepaid_value: r.unused_prepaid_value ?? r.unusedPrepaidValue ?? 0,
+  prepaidAmount: r.prepaid_amount ?? r.prepaidAmount ?? 0,
+  prepaid_amount: r.prepaid_amount ?? r.prepaidAmount ?? 0,
+  createdAt: r.created_at ?? r.createdAt ?? '',
+  created_at: r.created_at ?? r.createdAt ?? '',
+});
+
+export const normalizeLifeboat = (a) => ({
+  ...a,
+  adjustmentNumber: a.adjustment_number ?? a.adjustmentNumber ?? a.id,
+  adjustment_number: a.adjustment_number ?? a.adjustmentNumber ?? a.id,
+  customerId: a.customer_id ?? a.customerId ?? '',
+  customer_id: a.customer_id ?? a.customerId ?? '',
+  customerName: a.customer_name ?? a.customerName ?? '',
+  subscriptionId: a.subscription_id ?? a.subscriptionId ?? '',
+  subscription_id: a.subscription_id ?? a.subscriptionId ?? '',
+  adjustmentType: a.adjustment_type ?? a.adjustmentType ?? '',
+  adjustment_type: a.adjustment_type ?? a.adjustmentType ?? '',
+  startDate: a.start_date ?? a.startDate ?? '',
+  start_date: a.start_date ?? a.startDate ?? '',
+  endDate: a.end_date ?? a.endDate ?? '',
+  end_date: a.end_date ?? a.endDate ?? '',
+  scheduledRestorationDate: a.scheduled_restoration_date ?? a.scheduledRestorationDate ?? a.end_date ?? '',
+  scheduled_restoration_date: a.scheduled_restoration_date ?? a.scheduledRestorationDate ?? a.end_date ?? '',
+  originalPrice: a.original_price ?? a.originalPrice ?? 0,
+  original_price: a.original_price ?? a.originalPrice ?? 0,
+  temporaryPrice: a.temporary_price ?? a.temporaryPrice ?? 0,
+  temporary_price: a.temporary_price ?? a.temporaryPrice ?? 0,
+  deferredAmount: a.deferred_amount ?? a.deferredAmount ?? 0,
+  deferred_amount: a.deferred_amount ?? a.deferredAmount ?? 0,
+  isRestored: a.is_restored ?? a.isRestored ?? false,
+  is_restored: a.is_restored ?? a.isRestored ?? false,
+});
+
+export const normalizeOutcomeContract = (c) => ({
+  ...c,
+  contractNumber: c.contract_number ?? c.contractNumber ?? c.id,
+  contract_number: c.contract_number ?? c.contractNumber ?? c.id,
+  customerId: c.customer_id ?? c.customerId ?? '',
+  customer_id: c.customer_id ?? c.customerId ?? '',
+  customerName: c.customer_name ?? c.customerName ?? '',
+  subscriptionId: c.subscription_id ?? c.subscriptionId ?? '',
+  subscription_id: c.subscription_id ?? c.subscriptionId ?? '',
+  productId: c.product_id ?? c.productId ?? '',
+  product_id: c.product_id ?? c.productId ?? '',
+  startDate: c.start_date ?? c.startDate ?? '',
+  start_date: c.start_date ?? c.startDate ?? '',
+  endDate: c.end_date ?? c.endDate ?? '',
+  end_date: c.end_date ?? c.endDate ?? '',
+  metrics: c.metrics || [],
+});
+
+export const normalizeServiceCredit = (cr) => ({
+  ...cr,
+  creditNumber: cr.credit_number ?? cr.creditNumber ?? cr.id,
+  credit_number: cr.credit_number ?? cr.creditNumber ?? cr.id,
+  contractId: cr.contract_id ?? cr.contractId ?? '',
+  contract_id: cr.contract_id ?? cr.contractId ?? '',
+  customerId: cr.customer_id ?? cr.customerId ?? '',
+  customer_id: cr.customer_id ?? cr.customerId ?? '',
+  creditAmount: cr.credit_amount ?? cr.creditAmount ?? 0,
+  credit_amount: cr.credit_amount ?? cr.creditAmount ?? 0,
+  appliedInvoiceId: cr.applied_invoice_id ?? cr.appliedInvoiceId ?? null,
+  applied_invoice_id: cr.applied_invoice_id ?? cr.appliedInvoiceId ?? null,
+  calculationNotes: cr.calculation_notes ?? cr.calculationNotes ?? '',
+  calculation_notes: cr.calculation_notes ?? cr.calculationNotes ?? '',
+});
+
+export const normalizeExchangeOffering = (o) => ({
+  ...o,
+  offeringNumber: o.offering_number ?? o.offeringNumber ?? o.id,
+  offering_number: o.offering_number ?? o.offeringNumber ?? o.id,
+  providerId: o.provider_id ?? o.providerId ?? '',
+  provider_id: o.provider_id ?? o.providerId ?? '',
+  providerName: o.provider_name ?? o.providerName ?? '',
+  provider_name: o.provider_name ?? o.providerName ?? '',
+  productId: o.product_id ?? o.productId ?? '',
+  product_id: o.product_id ?? o.productId ?? '',
+  planId: o.plan_id ?? o.planId ?? '',
+  plan_id: o.plan_id ?? o.planId ?? '',
+  price: o.price ?? 0,
+  billingFrequency: o.billing_frequency ?? o.billingFrequency ?? 'Monthly',
+  billing_frequency: o.billing_frequency ?? o.billingFrequency ?? 'Monthly',
+  commitments: o.commitments || [],
+});
+
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
@@ -254,6 +354,15 @@ export const DataProvider = ({ children }) => {
     return s ? JSON.parse(s) : initialSettings;
   });
 
+  // Phase 13: Innovation States
+  const [portabilityRequests, setPortabilityRequests] = useState([]);
+  const [lifeboatAdjustments, setLifeboatAdjustments] = useState([]);
+  const [outcomeContracts, setOutcomeContracts] = useState([]);
+  const [serviceCredits, setServiceCredits] = useState([]);
+  const [exchangeProviders, setExchangeProviders] = useState([]);
+  const [exchangeOfferings, setExchangeOfferings] = useState([]);
+  const [exchangeInterestRequests, setExchangeInterestRequests] = useState([]);
+
   // Active customer for portal view
   const [portalCustomerId, setPortalCustomerId] = useState('cust-1');
 
@@ -287,6 +396,13 @@ export const DataProvider = ({ children }) => {
         discsRes,
         companyRes,
         taxesRes,
+        portRes,
+        lifeRes,
+        contractsRes,
+        creditsRes,
+        provsRes,
+        offsRes,
+        interestsRes,
       ] = await Promise.allSettled([
         apiClient.get(API_ENDPOINTS.PRODUCTS.BASE),
         apiClient.get(API_ENDPOINTS.PLANS.BASE),
@@ -298,6 +414,13 @@ export const DataProvider = ({ children }) => {
         apiClient.get(API_ENDPOINTS.DISCOUNTS.BASE),
         apiClient.get(API_ENDPOINTS.SETTINGS.COMPANY),
         apiClient.get(API_ENDPOINTS.SETTINGS.TAXES),
+        apiClient.get(API_ENDPOINTS.PORTABILITY.REQUESTS),
+        apiClient.get(API_ENDPOINTS.LIFEBOAT.ADJUSTMENTS),
+        apiClient.get(API_ENDPOINTS.OUTCOME_CONTRACTS.BASE),
+        apiClient.get(API_ENDPOINTS.OUTCOME_CONTRACTS.CREDITS),
+        apiClient.get(API_ENDPOINTS.EXCHANGE.PROVIDERS),
+        apiClient.get(API_ENDPOINTS.EXCHANGE.OFFERINGS),
+        apiClient.get(API_ENDPOINTS.EXCHANGE.INTEREST_REQUESTS),
       ]);
 
       if (prodsRes.status === 'fulfilled' && Array.isArray(prodsRes.value)) {
@@ -335,6 +458,27 @@ export const DataProvider = ({ children }) => {
           ...prev,
           taxConfig: taxesRes.value,
         }));
+      }
+      if (portRes.status === 'fulfilled' && Array.isArray(portRes.value)) {
+        setPortabilityRequests(portRes.value.map(normalizePortability));
+      }
+      if (lifeRes.status === 'fulfilled' && Array.isArray(lifeRes.value)) {
+        setLifeboatAdjustments(lifeRes.value.map(normalizeLifeboat));
+      }
+      if (contractsRes.status === 'fulfilled' && Array.isArray(contractsRes.value)) {
+        setOutcomeContracts(contractsRes.value.map(normalizeOutcomeContract));
+      }
+      if (creditsRes.status === 'fulfilled' && Array.isArray(creditsRes.value)) {
+        setServiceCredits(creditsRes.value.map(normalizeServiceCredit));
+      }
+      if (provsRes.status === 'fulfilled' && Array.isArray(provsRes.value)) {
+        setExchangeProviders(provsRes.value);
+      }
+      if (offsRes.status === 'fulfilled' && Array.isArray(offsRes.value)) {
+        setExchangeOfferings(offsRes.value.map(normalizeExchangeOffering));
+      }
+      if (interestsRes.status === 'fulfilled' && Array.isArray(interestsRes.value)) {
+        setExchangeInterestRequests(interestsRes.value);
       }
     } catch {
       // Backend not running; fallback to pre-seeded dataset
@@ -1072,6 +1216,194 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  // =========================================================================
+  // PHASE 13: INNOVATION ACTION HANDLERS
+  // =========================================================================
+
+  // 1. Subscription Continuity Network
+  const createPortabilityRequest = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.PORTABILITY.REQUESTS, payload);
+      toast.success('Portability request created successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to create portability request');
+      throw err;
+    }
+  };
+
+  const reviewPortabilityRequest = async (id, action, notes = '') => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.PORTABILITY.REVIEW(id), { action, notes });
+      toast.success(`Portability request ${action === 'Approve' ? 'approved' : 'rejected'}`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to review portability request');
+      throw err;
+    }
+  };
+
+  const completePortabilityMigration = async (id, notes = '') => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.PORTABILITY.COMPLETE(id), { notes });
+      toast.success('Subscription migration successfully completed');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to complete migration');
+      throw err;
+    }
+  };
+
+  // 2. Subscription Lifeboat
+  const createLifeboatAdjustment = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.LIFEBOAT.ADJUSTMENTS, payload);
+      toast.success('Lifeboat relief request submitted successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to submit lifeboat request');
+      throw err;
+    }
+  };
+
+  const reviewLifeboatAdjustment = async (id, action, notes = '') => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.LIFEBOAT.REVIEW(id), { action, notes });
+      toast.success(`Lifeboat adjustment ${action === 'Approve' ? 'approved' : 'rejected'}`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to review lifeboat adjustment');
+      throw err;
+    }
+  };
+
+  const restoreLifeboatAdjustment = async (id, notes = '') => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.LIFEBOAT.RESTORE(id), { notes });
+      toast.success('Original subscription configuration restored successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to restore subscription');
+      throw err;
+    }
+  };
+
+  const processExpiredLifeboatAdjustments = async () => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.LIFEBOAT.PROCESS_EXPIRED);
+      toast.success(`Processed ${res.restored_count ?? 0} expired adjustments`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to process expired adjustments');
+      throw err;
+    }
+  };
+
+  // 3. Subscription Outcome Contracts
+  const createOutcomeContract = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.OUTCOME_CONTRACTS.BASE, payload);
+      toast.success('Outcome contract created successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to create outcome contract');
+      throw err;
+    }
+  };
+
+  const recordContractMeasurement = async (contractId, payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.OUTCOME_CONTRACTS.MEASUREMENTS(contractId), payload);
+      toast.success(`Performance measured. Credits generated: ₹${res.credits_generated?.reduce((sum, c) => sum + (c.credit_amount || 0), 0) || 0}`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to record measurement');
+      throw err;
+    }
+  };
+
+  const reviewServiceCredit = async (creditId, action, notes = '') => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.OUTCOME_CONTRACTS.REVIEW_CREDIT(creditId), { action, notes });
+      toast.success(`Service credit ${action === 'Approve' ? 'approved' : 'rejected'}`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to review service credit');
+      throw err;
+    }
+  };
+
+  const applyServiceCreditToInvoice = async (creditId, invoiceId) => {
+    try {
+      const res = await apiClient.post(`${API_ENDPOINTS.OUTCOME_CONTRACTS.APPLY_CREDIT(creditId)}?invoice_id=${encodeURIComponent(invoiceId)}`);
+      toast.success('Service credit successfully applied to invoice');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to apply credit to invoice');
+      throw err;
+    }
+  };
+
+  // 4. Subscription Outcome Exchange
+  const createExchangeProvider = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.EXCHANGE.PROVIDERS, payload);
+      toast.success('Provider profile created successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to create provider profile');
+      throw err;
+    }
+  };
+
+  const createExchangeOffering = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.EXCHANGE.OFFERINGS, payload);
+      toast.success('Exchange offering created successfully');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to create exchange offering');
+      throw err;
+    }
+  };
+
+  const submitOfferingInterest = async (payload) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.EXCHANGE.INTEREST_REQUESTS, payload);
+      toast.success('Interest request submitted to provider');
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to submit interest request');
+      throw err;
+    }
+  };
+
+  const convertInterestRequestToQuotation = async (id) => {
+    try {
+      const res = await apiClient.post(API_ENDPOINTS.EXCHANGE.CONVERT_INTEREST(id));
+      toast.success(`Converted to Quotation #${res.quotation_number || ''}`);
+      await refreshData();
+      return res;
+    } catch (err) {
+      toast.error(err.message || 'Failed to convert interest to quotation');
+      throw err;
+    }
+  };
+
   // Dynamic Demo Customer for Portal
   const portalCustomer = useMemo(() => {
     if (!user || user.role !== ROLES.CUSTOMER) {
@@ -1137,6 +1469,15 @@ export const DataProvider = ({ children }) => {
         setPortalCustomerId,
         resetAllData,
 
+        // Phase 13 Entities
+        portabilityRequests,
+        lifeboatAdjustments,
+        outcomeContracts,
+        serviceCredits,
+        exchangeProviders,
+        exchangeOfferings,
+        exchangeInterestRequests,
+
         // Product handlers
         addProduct,
         updateProduct,
@@ -1182,6 +1523,26 @@ export const DataProvider = ({ children }) => {
         deleteStaffMember,
         updateTaxConfig,
         updateNotificationPreferences,
+
+        // Phase 13 Innovation Handlers
+        createPortabilityRequest,
+        reviewPortabilityRequest,
+        completePortabilityMigration,
+
+        createLifeboatAdjustment,
+        reviewLifeboatAdjustment,
+        restoreLifeboatAdjustment,
+        processExpiredLifeboatAdjustments,
+
+        createOutcomeContract,
+        recordContractMeasurement,
+        reviewServiceCredit,
+        applyServiceCreditToInvoice,
+
+        createExchangeProvider,
+        createExchangeOffering,
+        submitOfferingInterest,
+        convertInterestRequestToQuotation,
       }}
     >
       {children}

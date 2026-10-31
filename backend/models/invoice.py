@@ -34,6 +34,7 @@ class Invoice(Base):
     subscription_rel = relationship("Subscription", back_populates="invoices")
     lines = relationship("InvoiceLine", back_populates="invoice_rel", cascade="all, delete-orphan", lazy="joined")
     payments = relationship("Payment", back_populates="invoice_rel")
+    service_credits = relationship("ServiceCredit", back_populates="invoice_rel")
 
 
 class InvoiceLine(Base):

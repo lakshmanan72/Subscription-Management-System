@@ -12,6 +12,29 @@ from backend.models.tax import TaxConfig
 from backend.models.setting import CompanySetting, NotificationPreference
 from backend.models.notification import Notification
 from backend.models.audit import AuditLog
+from backend.models.portability import (
+    PortabilityRequest,
+    PortabilityRecord,
+    SubscriptionMigrationEvent,
+)
+from backend.models.lifeboat import (
+    SubscriptionAdjustment,
+    AdjustmentApproval,
+    AdjustmentHistory,
+)
+from backend.models.outcome_contract import (
+    OutcomeContract,
+    ContractMetric,
+    PerformanceMeasurement,
+    ServiceCredit,
+    ServiceCreditApproval,
+)
+from backend.models.outcome_exchange import (
+    ProviderProfile,
+    SubscriptionOffering,
+    OfferingCommitment,
+    OfferingInterestRequest,
+)
 
 __all__ = [
     "User",
@@ -34,4 +57,20 @@ __all__ = [
     "NotificationPreference",
     "Notification",
     "AuditLog",
+    "PortabilityRequest",
+    "PortabilityRecord",
+    "SubscriptionMigrationEvent",
+    "SubscriptionAdjustment",
+    "AdjustmentApproval",
+    "AdjustmentHistory",
+    "OutcomeContract",
+    "ContractMetric",
+    "PerformanceMeasurement",
+    "ServiceCredit",
+    "ServiceCreditApproval",
+    "ProviderProfile",
+    "SubscriptionOffering",
+    "OfferingCommitment",
+    "OfferingInterestRequest",
 ]
+

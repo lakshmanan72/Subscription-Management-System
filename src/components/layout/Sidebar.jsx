@@ -16,6 +16,10 @@ import {
   ChevronRight,
   ExternalLink,
   Sparkles,
+  Network,
+  LifeBuoy,
+  ShieldAlert,
+  ShoppingBag,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -33,6 +37,10 @@ export const Sidebar = ({ isCollapsed, toggleCollapsed }) => {
     { name: 'Payments', path: '/payments', icon: CreditCard },
     { name: 'Discounts', path: '/discounts', icon: Percent },
     { name: 'Customers', path: '/customers', icon: Users2 },
+    { name: 'Continuity Net', path: '/continuity', icon: Network },
+    { name: 'Lifeboat Relief', path: '/lifeboat', icon: LifeBuoy },
+    { name: 'Outcome Contracts', path: '/contracts', icon: ShieldAlert },
+    { name: 'Outcome Exchange', path: '/exchange', icon: ShoppingBag },
     { name: 'Reports', path: '/reports', icon: BarChart3 },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];

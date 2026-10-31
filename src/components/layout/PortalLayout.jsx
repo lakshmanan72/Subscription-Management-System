@@ -10,6 +10,10 @@ import {
   ArrowLeft,
   LogOut,
   ChevronDown,
+  Network,
+  LifeBuoy,
+  ShieldAlert,
+  ShoppingBag,
 } from 'lucide-react';
 import { useData } from '../../context/DataContext';
 import { useAuth, ROLES } from '../../context/AuthContext';
@@ -24,6 +28,10 @@ export const PortalLayout = () => {
     { name: 'My Subscriptions', path: '/portal/subscriptions', icon: Repeat },
     { name: 'My Invoices', path: '/portal/invoices', icon: Receipt },
     { name: 'Payment History', path: '/portal/payments', icon: CreditCard },
+    { name: 'Portability', path: '/portal/portability', icon: Network },
+    { name: 'Lifeboat Relief', path: '/portal/lifeboat', icon: LifeBuoy },
+    { name: 'SLA Contracts', path: '/portal/contracts', icon: ShieldAlert },
+    { name: 'Outcome Exchange', path: '/portal/exchange', icon: ShoppingBag },
     { name: 'My Profile', path: '/portal/profile', icon: User },
   ];
 

@@ -51,4 +51,7 @@ backend/.env
 backend/*.db
 backend/tests/*.db
 
-
+# Python virtual environments
+backend/venv/
+venv/
+.venv/

@@ -88,7 +88,7 @@ class BillingService:
                     total_tax += line_tax
                     new_lines.append(
                         InvoiceLine(
-                            id=f"inv-l-{int(datetime.utcnow().timestamp() * 1000)}-{len(new_lines)}",
+                            id=f"inv-l-{inv_id}-{len(new_lines)}",
                             description=f"{pl.product_name} ({pl.variant_name or 'Standard'}) - {sub.billing_frequency}",
                             quantity=pl.quantity,
                             unit_price=pl.unit_price,
@@ -101,7 +101,7 @@ class BillingService:
                 total_tax = line_subtotal * (float(sub.taxes or 18.0) / 100.0)
                 new_lines.append(
                     InvoiceLine(
-                        id=f"inv-l-{int(datetime.utcnow().timestamp() * 1000)}-0",
+                        id=f"inv-l-{inv_id}-0",
                         description=f"{sub.product} ({sub.plan}) - {sub.billing_frequency}",
                         quantity=sub.quantity,
                         unit_price=sub.unit_price,
@@ -147,7 +147,7 @@ class BillingService:
 
             # Add activity timeline log to subscription
             timeline_log = SubscriptionTimeline(
-                id=f"act-{int(datetime.utcnow().timestamp() * 1000)}",
+                id=f"act-{int(datetime.utcnow().timestamp() * 1000)}-{sub.id}-{len(generated_invoices)}",
                 subscription_id=sub.id,
                 timestamp=datetime.utcnow().strftime("%Y-%m-%d %I:%M %p"),
                 title="Monthly Cycle Auto-Billed",

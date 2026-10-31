@@ -11,6 +11,10 @@ from backend.api.reports import router as reports_router
 from backend.api.settings import router as settings_router
 from backend.api.dashboard import router as dashboard_router
 from backend.api.notifications import router as notifications_router
+from backend.api.portability import router as portability_router
+from backend.api.lifeboat import router as lifeboat_router
+from backend.api.outcome_contracts import router as outcome_contracts_router
+from backend.api.outcome_exchange import router as outcome_exchange_router
 
 __all__ = [
     "auth_router",
@@ -26,4 +30,9 @@ __all__ = [
     "settings_router",
     "dashboard_router",
     "notifications_router",
+    "portability_router",
+    "lifeboat_router",
+    "outcome_contracts_router",
+    "outcome_exchange_router",
 ]
+

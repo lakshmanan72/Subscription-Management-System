@@ -34,6 +34,10 @@ class Subscription(Base):
     product_lines = relationship("SubscriptionLine", back_populates="subscription_rel", cascade="all, delete-orphan", lazy="joined")
     activity_timeline = relationship("SubscriptionTimeline", back_populates="subscription_rel", cascade="all, delete-orphan", lazy="joined", order_by="desc(SubscriptionTimeline.id)")
     invoices = relationship("Invoice", back_populates="subscription_rel")
+    portability_requests = relationship("PortabilityRequest", back_populates="subscription_rel", cascade="all, delete-orphan")
+    adjustments = relationship("SubscriptionAdjustment", back_populates="subscription_rel", cascade="all, delete-orphan")
+    outcome_contracts = relationship("OutcomeContract", back_populates="subscription_rel")
+    service_credits = relationship("ServiceCredit", back_populates="subscription_rel")
 
 
 class SubscriptionLine(Base):

@@ -7,6 +7,10 @@ from backend.models.payment import Payment
 from backend.models.customer import Customer
 from backend.models.quotation import Quotation
 from backend.models.plan import Plan
+from backend.models.portability import PortabilityRequest
+from backend.models.lifeboat import SubscriptionAdjustment
+from backend.models.outcome_contract import OutcomeContract, ServiceCredit
+from backend.models.outcome_exchange import SubscriptionOffering
 
 
 def round_curr(val: float) -> float:
@@ -50,6 +54,28 @@ class DashboardService:
         overdue_invoices = [inv for inv in all_invoices if inv.status == "Overdue"]
         overdue_total = sum(float(inv.outstanding_amount or 0.0) for inv in overdue_invoices)
 
+        # Innovation Metrics (Phase 13)
+        active_portability_requests = db.query(PortabilityRequest).filter(
+            PortabilityRequest.status.in_(["Pending", "Approved"])
+        ).count()
+        adjustments_awaiting_approval = db.query(SubscriptionAdjustment).filter(
+            SubscriptionAdjustment.status == "Pending"
+        ).count()
+        upcoming_restorations = db.query(SubscriptionAdjustment).filter(
+            SubscriptionAdjustment.status == "Active",
+            SubscriptionAdjustment.is_restored == False,
+        ).count()
+        active_outcome_contracts = db.query(OutcomeContract).filter(
+            OutcomeContract.status == "Active"
+        ).count()
+        issued_credits = db.query(ServiceCredit).filter(
+            ServiceCredit.status.in_(["Approved", "Applied"])
+        ).all()
+        service_credits_total = sum(float(c.credit_amount or 0.0) for c in issued_credits)
+        active_offerings_count = db.query(SubscriptionOffering).filter(
+            SubscriptionOffering.is_active == True
+        ).count()
+
         return {
             "total_revenue": round_curr(total_revenue),
             "mrr": round_curr(mrr),
@@ -60,7 +86,14 @@ class DashboardService:
             "overdue_invoices_total": round_curr(overdue_total),
             "overdue_invoices": round_curr(overdue_total),
             "overdue_invoices_count": len(overdue_invoices),
+            "active_portability_requests": active_portability_requests,
+            "adjustments_awaiting_approval": adjustments_awaiting_approval,
+            "upcoming_restorations": upcoming_restorations,
+            "active_outcome_contracts": active_outcome_contracts,
+            "service_credits_issued": round_curr(service_credits_total),
+            "active_offerings": active_offerings_count,
         }
+
 
     @staticmethod
     def get_chart_data(db: Session) -> Dict[str, Any]:
@@ -150,6 +183,25 @@ class DashboardService:
         outstanding_amount = sum(float(i.outstanding_amount or 0.0) for i in invs if i.status in ("Overdue", "Confirmed"))
         overdue_invs = [i for i in invs if i.status == "Overdue"]
 
+        # Portal Innovation Counts
+        cust_portability_count = db.query(PortabilityRequest).filter(
+            PortabilityRequest.customer_id == customer_id,
+            PortabilityRequest.status.in_(["Pending", "Approved"]),
+        ).count()
+        cust_adjustments_count = db.query(SubscriptionAdjustment).filter(
+            SubscriptionAdjustment.customer_id == customer_id,
+            SubscriptionAdjustment.status.in_(["Pending", "Active"]),
+        ).count()
+        cust_contracts_count = db.query(OutcomeContract).filter(
+            OutcomeContract.customer_id == customer_id,
+            OutcomeContract.status == "Active",
+        ).count()
+        cust_credits = db.query(ServiceCredit).filter(
+            ServiceCredit.customer_id == customer_id,
+            ServiceCredit.status.in_(["Approved", "Applied"]),
+        ).all()
+        cust_credits_total = sum(float(c.credit_amount or 0.0) for c in cust_credits)
+
         return {
             "active_subscriptions_count": len(active_subs),
             "total_subscriptions_count": len(subs),
@@ -157,4 +209,9 @@ class DashboardService:
             "total_payments_count": len(pays),
             "outstanding_balance": round_curr(outstanding_amount),
             "overdue_invoices_count": len(overdue_invs),
+            "active_portability_requests": cust_portability_count,
+            "active_lifeboat_adjustments": cust_adjustments_count,
+            "active_outcome_contracts": cust_contracts_count,
+            "earned_service_credits": round_curr(cust_credits_total),
         }
+

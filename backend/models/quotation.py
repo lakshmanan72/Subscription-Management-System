@@ -24,6 +24,7 @@ class Quotation(Base):
 
     customer_rel = relationship("Customer", back_populates="quotations")
     lines = relationship("QuotationLine", back_populates="quotation_rel", cascade="all, delete-orphan", lazy="joined")
+    offering_interest_requests = relationship("OfferingInterestRequest", back_populates="quotation_rel")
 
 
 class QuotationLine(Base):
