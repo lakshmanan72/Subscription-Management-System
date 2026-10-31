@@ -41,4 +41,14 @@ Thumbs.db
 .eslintcache
 .cache
 coverage
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Backend local database and env
+backend/.env
+backend/*.db
+backend/tests/*.db
+
 
