@@ -39,7 +39,7 @@ export const Reports = () => {
   const [dateRange, setDateRange] = useState('YTD'); // '30D' | '90D' | 'YTD' | 'ALL'
 
   // Dynamic calculations
-  const totalRevenue = payments.reduce((acc, p) => acc + (p.status === 'Success' ? p.amount : 0), 0) + 285000;
+  const totalRevenue = payments.reduce((acc, p) => acc + (p.status === 'Success' ? p.amount : 0), 0);
   const activeSubs = subscriptions.filter((s) => s.status === 'Active');
   const overdueInvoices = invoices.filter((i) => i.status === 'Overdue');
   const overdueTotal = overdueInvoices.reduce((acc, i) => acc + (i.outstandingAmount || 0), 0);

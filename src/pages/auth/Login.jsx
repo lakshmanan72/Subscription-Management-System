@@ -6,7 +6,7 @@ import Button from '../../components/common/Button';
 
 export const Login = () => {
   const [email, setEmail] = useState('priyanka@brightloop.io');
-  const [password, setPassword] = useState('Secret123!');
+  const [password, setPassword] = useState('Admin@Brightloop123!');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
